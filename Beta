@@ -46,7 +46,7 @@ local Window = Library.CreateLib("Xesonz CH", "DarkTheme")
 local Tab = Window:NewTab("Main")
 local Section = Tab:NewSection("AutoFarm")
 
-Section:NewToggle("AutoFarm", false, function(v)
+Section:NewToggle("AutoFarm (KillALL)", false, function(v)
     _G.AutoFarm = v
 end)
 
@@ -54,18 +54,27 @@ spawn(function()
     while wait() do
         pcall(function ()
         if _G.AutoFarm then
-            for i , v in pairs(game:GetService("Workspace").NPCs.InvestigatorSpawn:GetDescendants()) do
-                if v.Name == "High Level Investigator" then
+            for i , v in pairs(game:GetService("Workspace").NPCs:GetDescendants()) do
+                if v.Name == "HumanoidRootPart" then
+                    if v.Parent.Humanoid.Health >= 0 then
                         repeat task.wait()
                             AutoHaki()
-                            TP(v.HumanoidRootPart.CFrame * CFrame.Angles(math.rad(-90),0, 0) * CFrame.new(0,0,10))
+                            TP(v.CFrame * CFrame.Angles(math.rad(-90),0, 0) * CFrame.new(0,0,10))
                             click()
                             game:GetService("VirtualInputManager"):SendKeyEvent(true,101,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
                             game:GetService("VirtualInputManager"):SendKeyEvent(false,101,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-                        until _G.AutoFarm == false or v.Humanoid.Health <= 0
+                        until _G.AutoFarm == false or v.Parent.Humanoid.Health <= 0
+                    end
                 end
             end
         end
     end)
     end
 end)
+
+local args = {
+    [1] = "WeaponAddButton",
+    [2] = 1
+}
+
+game:GetService("Players").LocalPlayer:WaitForChild("statusfunction"):InvokeServer("WeaponAddButton",1)
